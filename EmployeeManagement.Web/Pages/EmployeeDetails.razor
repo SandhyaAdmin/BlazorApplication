@@ -1,0 +1,37 @@
+﻿
+@page "/employeedetails/{id}"
+@page "/employeedetails"
+@inherits EmployeeDetailsBase
+
+<h3>EmployeeDetails</h3>
+@if (Employee == null){
+            <div class="spinner-border uspinner text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+}
+else{
+<div class="row-justify-content-center m-3">
+    <div class="col-sm-8">
+        <div class="card">
+            <div class="card-header">
+                <h1>@Employee.FirstName @Employee.LastName</h1>
+            </div>
+            <div class="card-body text-center">
+                <img class="card-img-top imageThumbnail" src="@Employee.PhotoPath" />
+                <h4>Id : @Employee.EmployeeId</h4>
+                <h4>Gender : @Employee.Gender</h4>
+                <h4>Email: @Employee.Email</h4>
+                <h4>DOB: @Employee.DateOfBitrh</h4>
+                <h4>Department Name: @(Employee.Department == null ? "N/A" : Employee.Department.DepartmentName)</h4>
+            </div>
+        <div class="card-footer text-center">
+            <a href="/" class="btn btn-primary">Back</a>
+            <a href="#" class="btn btn-primary m-1"> Edit</a>
+            <a href="#" class="btn btn-danger m-1"> Delete</a>
+        </div>
+    </div>
+    </div>
+</div>
+}
+
+
