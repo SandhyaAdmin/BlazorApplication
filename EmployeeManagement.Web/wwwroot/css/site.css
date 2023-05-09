@@ -74,4 +74,7 @@ a, .btn-link {
     top: 50%;
     left: 60%;
 }
+.HideFooter{
+    display:none;
+}
 
