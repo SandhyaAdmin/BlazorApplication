@@ -8,6 +8,8 @@ namespace EmployeeManagement.Web.Pages
     public class EmployeeDetailsBase : ComponentBase
     {
         public Employee Employee { get; set; } = new Employee();
+        protected string ButtonText { get; set; } = "Hide Footer";
+        protected string CssClass { get; set; } = null;
         protected string Coordinates { get; set; }
 
         [Parameter]
@@ -25,5 +27,18 @@ namespace EmployeeManagement.Web.Pages
         //{
         //    Coordinates = $"x = {e.ClientX} y={e.ClientY}";
         //}
+        protected void Button_Click()
+        {
+            if(ButtonText == "Hide Footer")
+            {
+                ButtonText = "Show Footer";
+                CssClass = "HideFooter";
+            }
+            else
+            {
+                ButtonText = "Hide Footer";
+                CssClass = null;
+            }
+        }
     }
 }
