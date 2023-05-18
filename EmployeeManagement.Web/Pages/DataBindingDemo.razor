@@ -1,0 +1,44 @@
+﻿@page "/databindingdemo"
+@inherits DataBindingDemoBase
+
+<h1>DataBinding Demo</h1>
+
+<h3>One way Data Binding:</h3>
+<div>
+    <b> Name :</b> @Name
+</div>
+<div>
+    <b>Name with Salutaion :</b> @(Gender == "Female" ? $"Ms {Name}" : $"Mr {Name}")
+</div>
+<div>
+     <b> Name :</b> <input value = "@Name" />
+</div>
+<br />
+<h3>Two way Data Binding:</h3>
+<h6>Two way binding with onchange event :</h6>
+<div>
+     <b> Name :</b><input value = "@Name" @onchange = "@(e => {Name = e.Value.ToString();})" />
+</div>
+@*Note : Instead of Onchange event for 2 way binding, we are going for @bind attribute*@
+<h6>Two way binding with bind attribure :</h6>
+<div>
+     <b> Name :</b> <input @bind = "Name" />
+</div>
+@*Along with the property, we will specisy the name of the even we want to bind*@
+<h6>Two way databinding and we dont want to wait until the element looses its focus</h6>
+<div>
+     <b> Name :</b> <input @bind = "Name" @bind:event = "oninput" />
+</div>
+@*If we change the color propery in the input value through 2 way databinding, the color propery automatically updated with new value
+, now we wanr to apply this color as a stype to the new div element
+*@
+<div>
+     <b> color :</b> <input @bind = "Color" />
+</div>
+<div @bind-style = "Color" @bind-style:event = "onchange">
+    <h6>The back ground colr of the text changes</h6>
+</div>
+
+
+
+
