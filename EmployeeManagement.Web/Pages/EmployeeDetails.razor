@@ -1,14 +1,13 @@
-﻿
-@page "/employeedetails/{id}"
+﻿@page "/employeedetails/{id}"
 @page "/employeedetails"
 @inherits EmployeeDetailsBase
 
 <h3>EmployeeDetails</h3>
 @if (Employee == null)
 {
-                <div class="spinner-border uspinner text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
+    <div class="spinner-border uspinner text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
 }
 else
 {
@@ -16,12 +15,12 @@ else
         <div class="col-sm-8">
             <div class="card">
                 <div class="card-header">
-                        <h1>@Employee.FirstName @Employee.LastName @Coordinates</h1>
+                    <h1>@Employee.FirstName @Employee.LastName @Coordinates</h1>
                 </div>
                 <div class="card-body text-center">
                     @*<img class="card-img-top imageThumbnail" src="@Employee.PhotoPath" @onmousemove="@Mouse_Move"/>*@
                     <img class="card-img-top imageThumbnail" src="@Employee.PhotoPath" @onmousemove="@(e => Coordinates = $"x = {e.ClientX} y={e.ClientY}")" />
-                    <div class = "text-center">
+                    <div class="text-center">
                         <button class="btn btn-primary btn-sm" onclick="@Button_Click">@ButtonText</button>
                     </div>
                     <h4>Id : @Employee.EmployeeId</h4>
@@ -31,11 +30,11 @@ else
                     <h4>Department Name: @(Employee.Department == null ? "N/A" : Employee.Department.DepartmentName)</h4>
                 </div>
                 <div class="card-footer text-center @CssClass">
-                <a href="/" class="btn btn-primary">Back</a>
-                <a href="#" class="btn btn-primary m-1"> Edit</a>
-                <a href="#" class="btn btn-danger m-1"> Delete</a>
+                    <a href="/" class="btn btn-primary">Back</a>
+                    <a href="@($"editemployee/{Employee.EmployeeId}")" class="btn btn-primary m-1"> Edit</a>
+                    <a href="#" class="btn btn-danger m-1"> Delete</a>
+                </div>
             </div>
-        </div>
         </div>
     </div>
 }
