@@ -6,6 +6,7 @@
 <PageTitle>EmployeeList</PageTitle>
 <div>
 <b>
+ <h3> Selected Employees Count = @SelectedEmployeesCount </h3>
 <input type="checkbox" @bind = "ShowFooter" />
 </b> Show Footer
 </div>
@@ -23,7 +24,7 @@ else
     <div class="row">
     @foreach(var employee in employees)
             {
-                <DisplayEmployee Employee="employee" ShowFooter="ShowFooter">
+                <DisplayEmployee Employee="employee" ShowFooter="ShowFooter" OnEmployeeSeclection="EmployeeSelectionChange">
                 </DisplayEmployee>
             }
         </div>
