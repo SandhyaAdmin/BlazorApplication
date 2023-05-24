@@ -2,14 +2,17 @@
 @inherits EditEmployeeBase
 
 <EditForm Model=@Employee>
+    <DataAnnotationsValidator/>
     <h3>Edit Employee</h3>
     <hr />
+    <ValidationSummary/>
     <div class="form-group row">
         <label for="firstName" class="col-sm-10 col-form-label">
             First Name
         </label>
         <div class="col-sm-10">
             <InputText id="firstname" class="form-control" placeholder="First Name" @bind-Value="Employee.FirstName"></InputText>
+            <ValidationMessage For ="@(() => Employee.FirstName)"/>
         </div>
     </div>
 
@@ -19,6 +22,7 @@
         </label>
         <div class="col-sm-10">
             <InputText id="lastname" class="form-control" placeholder="Last Name" @bind-Value="Employee.LastName"></InputText>
+            <ValidationMessage For = "@(() => Employee.LastName)"/>
         </div>
     </div>
 
@@ -28,6 +32,7 @@
         </label>
         <div class="col-sm-10">
             <InputText id="email" class="form-control" placeholder="Email" @bind-Value="Employee.Email"></InputText>
+            <ValidationMessage For = "@(() => Employee.Email)"/>
         </div>
     </div>
 
