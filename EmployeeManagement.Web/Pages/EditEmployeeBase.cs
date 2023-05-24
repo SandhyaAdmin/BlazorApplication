@@ -8,8 +8,13 @@ namespace EmployeeManagement.Web.Pages
     {
         [Inject]
         public IEmployeeService EmployeeService { get; set; }
+        
+        [Inject]
+        public IDepartmentService DepartmentService { get; set; }
 
         public Employee Employee = new Employee();
+
+        public List<Department> Departments = new List<Department>();
 
         [Parameter]
         public string ID { get; set; }
@@ -17,6 +22,7 @@ namespace EmployeeManagement.Web.Pages
         protected async override Task OnInitializedAsync()
         {
             Employee = await EmployeeService.GetEmployee(int.Parse(ID));
+            Departments = (await DepartmentService.GetDepartments()).ToList();
         }
     }
 }
