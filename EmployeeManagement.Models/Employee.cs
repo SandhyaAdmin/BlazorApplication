@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EmployeeManagement.Models.CustomValidators;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
 namespace EmployeeManagement.Models
@@ -15,6 +16,7 @@ namespace EmployeeManagement.Models
         public string LastName { get; set; }
 
         [EmailAddress]
+        [EmailDomainValidator(AllowedDomain = "uhg.com",ErrorMessage = "domain name must be uhg.com")]
         public string Email { get; set; }
         public DateTime DateOfBitrh { get; set; }
         public Gender Gender { get; set; }
