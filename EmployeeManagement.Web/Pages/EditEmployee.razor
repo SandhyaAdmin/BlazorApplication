@@ -1,18 +1,18 @@
 ﻿@page "/editemployee/{id}"
 @inherits EditEmployeeBase
 
-<EditForm Model=@Employee>
-    <DataAnnotationsValidator/>
+<EditForm Model=@EditEmployeeModel OnValidSubmit="HandleValidSubmit">
+    <ObjectGraphDataAnnotationsValidator />
     <h3>Edit Employee</h3>
     <hr />
-    <ValidationSummary/>
+    <ValidationSummary />
     <div class="form-group row">
         <label for="firstName" class="col-sm-10 col-form-label">
             First Name
         </label>
         <div class="col-sm-10">
-            <InputText id="firstname" class="form-control" placeholder="First Name" @bind-Value="Employee.FirstName"></InputText>
-            <ValidationMessage For ="@(() => Employee.FirstName)"/>
+            <InputText id="firstname" class="form-control" placeholder="First Name" @bind-Value="EditEmployeeModel.FirstName"></InputText>
+            <ValidationMessage For="@(() => EditEmployeeModel.FirstName)" />
         </div>
     </div>
 
@@ -21,8 +21,8 @@
             Last Name
         </label>
         <div class="col-sm-10">
-            <InputText id="lastname" class="form-control" placeholder="Last Name" @bind-Value="Employee.LastName"></InputText>
-            <ValidationMessage For = "@(() => Employee.LastName)"/>
+            <InputText id="lastname" class="form-control" placeholder="Last Name" @bind-Value="EditEmployeeModel.LastName"></InputText>
+            <ValidationMessage For="@(() => EditEmployeeModel.LastName)" />
         </div>
     </div>
 
@@ -31,17 +31,28 @@
             Email
         </label>
         <div class="col-sm-10">
-            <InputText id="email" class="form-control" placeholder="Email" @bind-Value="Employee.Email"></InputText>
-            <ValidationMessage For = "@(() => Employee.Email)"/>
+            <InputText id="email" class="form-control" placeholder="Email" @bind-Value="EditEmployeeModel.Email"></InputText>
+            <ValidationMessage For="@(() => EditEmployeeModel.Email)" />
         </div>
     </div>
+
+    <div class="form-group row">
+        <label for="confirmemail" class="col-sm-10 col-form-label">
+            Confirm Email
+        </label>
+        <div class="col-sm-10">
+            <InputText id="confirmemail" class="form-control" placeholder="ConfirmEmail" @bind-Value="EditEmployeeModel.Email"></InputText>
+            <ValidationMessage For="@(() => EditEmployeeModel.Email)" />
+        </div>
+    </div>
+
 
     <div class="form-group row">
         <label for="department" class="col-sm-10 col-form-label">
             Department
         </label>
         <div class="col-sm-10">
-            <InputSelect id="department" class="form-control" @bind-Value="Employee.DepartmentId">
+            <InputSelect id="department" class="form-control" @bind-Value="EditEmployeeModel.DepartmentId">
                 @foreach (var dept in Departments)
                 {
                     <option value="@dept.DepartmentName">@dept.DepartmentName</option>
@@ -65,15 +76,26 @@
         </div>
     </div>
 
+    
+    <div class="form-group row">
+        <label for="departmentName" class="col-sm-10 col-form-label">
+            Department Name
+        </label>
+        <div class="col-sm-10">
+            <InputText id="departmentName" class="form-control" placeholder="departmentName" @bind-Value="EditEmployeeModel.Department.DepartmentName"></InputText>
+            <ValidationMessage For="@(() => EditEmployeeModel.Department.DepartmentName)" />
+        </div>
+    </div>
+
     <div class="form-group row">
         <label for="date" class="col-sm-10 col-form-label">
             Date
         </label>
         <div class="col-sm-10">
-            <InputDate id="date" class="form-control" @bind-Value="Employee.DateOfBitrh"></InputDate>
+            <InputDate id="date" class="form-control" @bind-Value="EditEmployeeModel.DateOfBitrh"></InputDate>
         </div>
     </div>
-
+     <button class="btn btn-primary" type="submit">Submit</button>
 
 
 </EditForm>
