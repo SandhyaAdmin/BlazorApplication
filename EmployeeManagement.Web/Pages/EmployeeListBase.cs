@@ -79,5 +79,14 @@ namespace EmployeeManagement.Web.Pages
             //    employees = new List<Employee> { e1, e2, e3, e4 };
             //}
         }
+
+        /* When OnEmployeeDeleted eventhandler calls the EmployeeDeleted method, same as button click even which calls other method for logic
+    then gets the list of employees
+    EmployeeDeleted() custom event method gets called when the custom delete event triggers
+*/
+        protected async Task EmployeeDeleted()
+        {
+            employees = (await employeeService.GetEmployees()).ToList();
+        }
     }
 }

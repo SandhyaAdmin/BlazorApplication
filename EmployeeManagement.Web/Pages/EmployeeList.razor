@@ -5,14 +5,14 @@
 
 <PageTitle>EmployeeList</PageTitle>
 <div>
-<b>
- <h3> Selected Employees Count = @SelectedEmployeesCount </h3>
-<input type="checkbox" @bind = "ShowFooter" />
-</b> Show Footer
+    <b>
+        <h3> Selected Employees Count = @SelectedEmployeesCount </h3>
+        <input type="checkbox" @bind="ShowFooter" />
+    </b> Show Footer
 </div>
 
 <h3>Employee List</h3>
-@if(employees == null)
+@if (employees == null)
 {
     <div class="spinner-border uspinner text-primary" role="status">
         <span class="visually-hidden">Loading...</span>
@@ -20,13 +20,14 @@
 }
 else
 {
-<div class="card-deck">
-    <div class="row">
-    @foreach(var employee in employees)
+    <div class="card-deck">
+        <div class="row">
+            @foreach (var employee in employees)
             {
-                <DisplayEmployee Employee="employee" ShowFooter="ShowFooter" OnEmployeeSeclection="EmployeeSelectionChange">
+                <DisplayEmployee Employee="employee" ShowFooter="ShowFooter" OnEmployeeSeclection="EmployeeSelectionChange"
+                         OnEmployeeDeleted="EmployeeDeleted">
                 </DisplayEmployee>
             }
         </div>
-</div>
+    </div>
 }
