@@ -1,4 +1,5 @@
 ﻿using EmployeeManagement.Models;
+using System.Net.Http.Json;
 
 namespace EmployeeManagement.Web.Services
 {
@@ -21,6 +22,16 @@ namespace EmployeeManagement.Web.Services
         {
             logger.LogTrace("Connecting to http client to retrive employee details from api end point");
             return await httpClient.GetFromJsonAsync<Employee>($"api/Employee/{id}");
+        }
+
+        public async Task<HttpResponseMessage> UpdateEmployee(Employee updatedEmployee)
+        {
+            return await httpClient.PutAsJsonAsync<Employee>("api/Employee", updatedEmployee);
+        }
+
+        public async Task<HttpResponseMessage> CreateEmployee(Employee newEmployee)
+        {
+            return await httpClient.PostAsJsonAsync<Employee>("api/Employee", newEmployee);
         }
     }
 }

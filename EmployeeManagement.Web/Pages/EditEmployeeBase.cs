@@ -17,6 +17,9 @@ namespace EmployeeManagement.Web.Pages
         [Inject]
         public IMapper Mapper { get; set; }
 
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+
         public EditEmployeeModel EditEmployeeModel = new EditEmployeeModel();
 
         public Employee Employee = new Employee();
@@ -28,7 +31,7 @@ namespace EmployeeManagement.Web.Pages
 
         protected async override Task OnInitializedAsync()
         {
-            Employee = await EmployeeService.GetEmployee(int.Parse(ID));
+           // Employee = await EmployeeService.GetEmployee(int.Parse(ID));
             //EditEmployeeModel.FirstName = Employee.FirstName;
             //EditEmployeeModel.LastName = Employee.LastName;
             //EditEmployeeModel.Email = Employee.Email;
@@ -37,12 +40,48 @@ namespace EmployeeManagement.Web.Pages
             //EditEmployeeModel.DepartmentId = Employee.DepartmentId;
             //EditEmployeeModel.Department.DepartmentName = Employee.Department.DepartmentName;
 
-            Mapper.Map(Employee, EditEmployeeModel);
+            int.TryParse(ID, out int employeeId);
+            //if employeeId is not null then we know we have valid employeeId, we are going to use this to edit existing employee
+            if (employeeId != 0)
+            {
+                Employee = await EmployeeService.GetEmployee(int.Parse(ID));
+            }
+            // Here, we do not have employee id in the url, then we are going to use EditEmployee Component, to create the component
+            else
+            {
+                // Default values
+                Employee = new Employee
+                {
+                    DepartmentId = 1,
+                    DateOfBitrh = DateTime.Now,
+                    PhotoPath = "images/nophoto.jpg"
+                };
+            }
 
             Departments = (await DepartmentService.GetDepartments()).ToList();
+            Mapper.Map(Employee, EditEmployeeModel);
         }
         protected void HandleValidSubmit() 
         {
+            Object result = new Object();
+            Mapper.Map(EditEmployeeModel, Employee);
+
+            if (Employee.EmployeeId != 0)
+            {
+                result = EmployeeService.UpdateEmployee(Employee);
+            }
+            else
+            {
+                result = EmployeeService.CreateEmployee(Employee);
+            }
+
+            if (result != null)
+            {
+                /* If the update is successfull, navigate to Employee List Component otherwise,
+                We stayed on to EditEmployeeBase component, display the validation errors if any.
+                */
+                NavigationManager.NavigateTo("/");
+            }
         }
     }
 }
