@@ -25,6 +25,8 @@ namespace EmployeeManagement.Web.Pages
         public Employee Employee = new Employee();
 
         public List<Department> Departments = new List<Department>();
+        public string PageHeaderText { get; set; }
+
 
         [Parameter]
         public string ID { get; set; }
@@ -44,11 +46,13 @@ namespace EmployeeManagement.Web.Pages
             //if employeeId is not null then we know we have valid employeeId, we are going to use this to edit existing employee
             if (employeeId != 0)
             {
+                PageHeaderText = "Edit Employee";
                 Employee = await EmployeeService.GetEmployee(int.Parse(ID));
             }
             // Here, we do not have employee id in the url, then we are going to use EditEmployee Component, to create the component
             else
             {
+                PageHeaderText = "Create Employee";
                 // Default values
                 Employee = new Employee
                 {

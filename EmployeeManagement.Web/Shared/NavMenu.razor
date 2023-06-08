@@ -20,15 +20,28 @@
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <nav class="flex-column">
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/editemployee">
-                <span class="oi oi-file" aria-hidden="true"></span> Create Employee
+            <NavLink class="nav-link" href="/editemployee" @onclick="HandleClick" Match="NavLinkMatch.All">
+                <span class="oi oi-file" aria-hidden="true"></span> Create
             </NavLink>
+        </div>
+    </nav>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/editemployee/1" @onclick="HandleClick" Match="NavLinkMatch.All" >
+                <span class="oi oi-pencil" area-hidden="true"></span> Edit
+            </NavLink>
+
         </div>
     </nav>
 </div>
 
 @code {
     private bool collapseNavMenu = true;
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
@@ -36,4 +49,14 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+    private void HandleClick()
+    {
+        /* The second parameter to this method is boolian, force load parameter
+           This will bypass the client side routing and forces the browser to load the component from the server
+         */
+        NavigationManager.NavigateTo("editemployee", true);
+
+
+    }
+
 }
