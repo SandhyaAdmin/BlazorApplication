@@ -1,0 +1,87 @@
+42. Force reload blazor component:
+	
+	We are using one component for both EditEmployee and for CreateEmployee.
+	So, the title name is same t.e "Edit Employee" for both Edit Employee and for Create Employee,
+	instead of that we need to pass dynamically for the workflows (Edit Employee and Create Employee)
+	
+EditEmployeeBase.cs
+	
+	Lets create  a property
+		public string PageHeaderText {get; set;}
+		
+		OnInitializedComponents(){
+			if(employeeId != 0){
+				PageHeaderText = "Edit Employee";
+				Employee = await EmployeeService.GetEmployee(int.Parse(Id));
+			}
+			else
+				PageHeaderText = "Create Employee";
+				...
+			}
+		}
+
+EditEmployee.razor :
+	<h3>@PageHeaderText</h3>
+	
+
+Note : If I am in the Edit Component i.e https://localhost:44352/editemployee/1
+		and If i clicked on create then it goes to https://localhost:44352/editemployee  
+		[navigation into same component]
+			but page header text does not load dynamically.
+			because the redirection happens onto the client and request not sent to the server
+			so, to fix this we have to force editemployee component to be loaded from server itself.
+
+NavMenu.razor:
+	1) Add @onclick="HandleClick" in <NavLink> Tag
+		<NavLink @onclick="HandleClick">
+		</NavLink>
+	2) Create the method in code block:
+		@code {
+			private void HandleClick(){
+			
+			}
+		}
+	Note : When this method is called t.e when we click on "Craeate Employee" button from EditEmployee page,
+	we want to programatically redirect to same Edit Employee component.
+	So we want to tell blazor to force load this EditEmployee component from the server.
+	For that we need navigation manager service.
+	3) 	@code {
+			@Inject NavigationManager NavigationManager;
+			private void HandleClick(){
+				/* The second parameter to this method is boolian, force load parameter
+				This will bypass the client side routing and forces the browser to load the component from the server
+				*/
+				NavigationManager.NavigateTo()
+			}
+		}
+	
+
+Note : So, when we use single component for multiple work flows, some times, we need to tell the blazor
+	  to force load the componets from the server by bypassing cliet side routing.
+	  
+
+	4) 
+		<li class = "nav-item px-3">
+			<NavLink class="nav-link" href="/editemployee/1" @onclick="HandleClick">
+				<span class="oi oi-pencil" area-hidden="true"></span> Edit
+			</NavLink>
+		</li>
+	
+	Note: When we click on Edit nav, selected menu style is applied to both the menu items(Create, Edit)
+		So, we want to make sure to apply the style based on their respective clicks.
+		For this, include Match component	
+				Match="NavLinkMatch.All"       --> selected style applied when the entire url matches.
+				Match="NavLinkMatch.All"       --> selected style applied when the any url prefix matches.
+	
+	5) 	<li class = "nav-item px-3">
+			<NavLink class="nav-link" href="/editemployee/1" @onclick="HandleClick" Match="NavLinkMatch.All" >
+				<span class="oi oi-pencil" area-hidden="true"></span> Edit
+			</NavLink>
+		</li>
+	6)  <li class = "nav-item px-3">
+			<NavLink class="nav-link" href="/editemployee" @onclick="HandleClick" Match="NavLinkMatch.All" >
+				<span class="oi oi-file" area-hidden="true"></span> Create
+			</NavLink>
+		</li>
+	
+

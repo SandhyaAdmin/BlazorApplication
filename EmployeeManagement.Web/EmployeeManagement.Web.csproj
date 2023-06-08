@@ -15,4 +15,8 @@
     <ProjectReference Include="..\EmployeeManagement.Models\EmployeeManagement.Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DevSupportDoc\" />
+  </ItemGroup>
+
 </Project>

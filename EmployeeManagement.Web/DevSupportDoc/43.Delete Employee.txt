@@ -1,0 +1,34 @@
+43. Delete database row from blazor
+
+EditEmployee.razor
+	1) 
+	@if(EditEmployeeModel.EmployeeId > 0)
+	{
+		<button class="btn btn-danger" type="button" @onclick="Delete_Click"> Delete </button>
+	}
+
+EditEmployeeBase.cs
+	2) 
+	protected async Task Delete_Click()
+	{
+		
+	}
+		
+EmployeeManagement.Web.Services
+	3) Add DeleteEmployee in IEmployeeService
+		Task<Employee> DeleteEmployee(int id);
+	
+	4) Add DeleteEmployee() implementation in EmployeeService
+        public async Task<HttpResponseMessage> DeleteEmployee(int id)
+        {
+            return await httpClient.DeleteAsync($"api/employees/{id}");
+        }
+EditEmployeeBase.cs
+	5) 
+	protected async Task Delete_Click()
+	{
+		await EmployeeService.DeleteEmployee(Employee.EmployeeId);
+		//After deletion navigating back to Employee List
+		NavigationManager.NavigateTo("/");
+	}
+	

@@ -1,0 +1,71 @@
+37. Compare Validation in blazor:
+EmailDomainValidator bug fix:
+	strings.Length > 1
+	
+	Models : EditEmployeeModel.cs  --> add confirmEmail
+		2. Decorate confirmEmail with [CompareProperty("Email", ErrorMessage="Email and confirmEmail must match")]
+	EditEmployeeBase.cs :
+		add > public EditEmployeeModel EditEmployeeModel {get; set;} = new EditEmployeeModel();
+		2. make Employee as private
+		3. Copy the values in Employee model to EditEmployee
+		4. protected void HandleValidSubmit(){}
+			
+	
+	EditEmployee.razor
+		add >	<EditForm Model = "@EditEmployeeModel" OnValidSubmit="HandleValidSubmit">
+		2. add html for confirmEmail field
+		3. <button class="btn btn-primary" type="submit">Submit</button>
+	
+
+	Install Microsoft.AspNetCore.Components.DataAnnotations.Validation
+		use [CompareProperty]
+
+38. Validating nested complex models and collection types in Blazor:
+		1. add [Required] attribute to the depart name
+		2. create new instance for Department in EditEmployeeModel.cs
+		3. Add Department.Name field in EditEmployee.razor
+Note : <DataAnnotationsValidator/> attches validatins for Edit form but does not applicable for complextypes
+		4. Use <ObjectGraphDataAnnotationsValidator> component for validating complex types too along with top level statements
+		5. Decorate complex type attriute with [ValidateComplexType] attribute ie Department in EditEmployeeModel
+		
+39. What is AutoMapper and using it in ASP.Net Core:
+	Note: Automapper is used to map one object to other object
+	Ex : If Employee model in services layer data needs to mapped to EditEmployeeModel in presentation layer which as conirm email as extra fiel	
+			while saving and retriving data from database
+	1) So, Instead of copying each and every value from Employee model EditEmployee model, they might be prone to errors, So to avoid that
+			we gonna use automapper
+			Install Nuget AutoMapper.Extensions.Microsoft.DependencyInjection
+	2) Add automapper services to the dependency injection container
+	Note : For AutoMapper, to map objects of one type to another type, it looks for something called mapping profiles.
+			So, we need to create a mapping profile class in web project under models folder
+			--> 
+			public EmployeeProfile : Profile{
+				public EmployeeProfile(){
+					CreateMap<Employee,EditEmployee>();
+					CreateMap<EditEmployee,Employee>();
+				}
+			}
+			---> In program.cs add automapper service in dependency injection container
+			Services.AddAutoMapper(typeof(EmployeeProfile))
+			
+			---> In EditEmployeeBase.cs get rid of boring mapping code
+				1. Inject AutoMapper IMapper service
+					[Inject]
+					public IMapper Mapper {get; set;}
+				2. In OnInitializedAsync(){
+					Mapper.Map(Employee,EditEmployeeModel);
+				}
+				3. Comment out manual mappin code
+				4.specify custom mapping to map email in confirmEmail field
+			    public EmployeeProfile : Profile{
+					public EmployeeProfile(){
+						CreateMap<Employee,EditEmployee>()
+							.ForMember(dest => dest.ConfirmEmail,
+										opt => opt.MapFrom(src => src.Email)
+										);
+						CreateMap<EditEmployee,Employee>();
+					}
+			    }
+			Note : Now, we have the data in all the fields including ConfirmEmail
+				
+	

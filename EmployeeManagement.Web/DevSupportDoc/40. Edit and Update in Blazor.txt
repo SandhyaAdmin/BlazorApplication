@@ -1,0 +1,147 @@
+40. Edit and Update in Blazor
+
+EmployeeManagement.Web.Services
+	Add UpdateEmployee in IEmployeeService
+		Task<Employee> UpdateEmployee(Employee updatedEmployee);
+	
+	Add UpdateEmployee() implementation in EmployeeService
+		public async Task<Employee> UpdateEmployee(Employee updatedEmployee){
+			return awiat httpClient.PutJsonAsync<Employee>("api/employees", updatedEmployee);
+		}
+	
+EmployeeController.cs 
+	Remove the extra id input parameter code in UpdateEmployee(Employee employee)
+	and get rid of id parameter in route attriute.
+
+EditEmployeeBase.cs
+	protected async Task HandleValidSubmit()
+	{
+		Mapper.Map(EditEmployeeModel, Employee);
+		var result = await EmployeeService.UpdateEmployee(Employee);
+		
+		if(result != null)
+		{
+		}
+	}
+	
+	Note : Inject NavigationManager Service to navigate the user to EmployeeList Service.
+	
+	[Inject]
+	public NavigationManager NavigationManager {get; set;}
+	
+		protected async Task HandleValidSubmit()
+	{
+		Mapper.Map(EditEmployeeModel, Employee);
+		var result = await EmployeeService.UpdateEmployee(Employee);
+		
+		if(result != null)
+		{
+			/* If the update is successfull, navigate to Employee List Component otherwise,
+				We stayed on to EditEmployeeBase component, display the validation errors if any.
+			*/
+			NavigationManager.NavigateTo("/");
+		}
+	}
+	
+	Note : In EditEmployee Page, we can not use Department Name to change department name.
+	We have used there to demonstrate complex model validations. Comment this field in EditEmployee Component.
+	2. If validation fails and we click the submit button then nothing works.
+	
+----------------------------------------------------------------------------------------------------------------------------------------
+41 Add database row in Blazor :
+
+EmployeeManagement.Web.Services
+	Add CreateEmployee() in IEmployeeService
+		Task<Employee> CreateEmployee(Employee newEmployee);
+	
+	Add CreateEmployee() implementation in EmployeeService
+		public async Task<Employee> CreateEmployee(Employee newEmployee){
+			return awiat httpClient.PostJsonAsync<Employee>("api/employees", newEmployee);
+		}
+
+Note : We are going to use EditEmployee component for both creating the new Employee and editing the existing employee.
+
+EditEmployeeBase.cs
+
+Note: Convert Id of string type to integer type
+
+	protected async override task OnInitializedAsync()
+	{
+		int.TryParse(Id, out int employeeId);
+		//if employeeId is not null then we know we have valid employeeId, we are going to use this to edit existing employee
+		if(employeeId != 0)
+		{
+			Employee = await EmployeeService.GetEmployee(int.Parse(id));
+		}
+		// Here, we do not have employee id in the url, then we are going to use EditEmployee Component, to create the component
+		else
+		{
+			// Default values
+			Employee = new Employee
+			{
+				DepartmentId = 1,
+				DateOfBirth = DateTime.Now,
+				PhotoPath = "images/nophoto.jpg"
+			};
+		}
+		
+		Department = (await DepartmentService.GetDepartments()).ToList();
+		Mapper.Map(Employee, EditEmployeeModel);
+		
+	}
+
+Note : include nophoto.jpg in images folder
+
+EditEmployee.razor
+	
+	Note : For creating new Employee, there is no route parameter. include routing for create new employee along with updating the Employee
+	@page "/editemployee"
+	
+EditEmployeeBase.cs
+
+	Note : If there is no rote parameter, then HandleValidSubmit method gets called and need to modify code to create employee
+	
+		protected async Task HandleValidSubmit()
+		{
+			Mapper.Map(EditEmployeeModel, Employee);
+			
+			Employee result = null;
+			
+			if(Employee.EmployeeId != 0)
+			{
+				result = await EmployeeService.UpdateEmployee(Employee);
+			}
+			else
+			{
+				result = await EmployeeService.CreateEmployee(Employee);
+			}
+					
+			if(result != null)
+			{
+					/* If the update is successfull, navigate to Employee List Component otherwise,
+					We stayed on to EditEmployeeBase component, display the validation errors if any.
+					*/
+					NavigationManager.NavigateTo("/");
+			}
+		}
+
+Shared -> NavMenu.razor
+Note : Below Home Navigation Menu item, just include Create Navigation
+		<li class = "nav-item px-3">
+			<NavLink class="nav-link" href="/editemployee">
+				<span class="oi oi-file" area-hidden="true"></span> Create
+			</NavLink>
+		</li>
+
+Bug Fix 1 : 
+EmailDomainValidator.cs
+		include 
+			if(value != null)
+			{
+			}
+Bug Fix 1 : 
+EmployeeController.cs	
+		include await keyword before
+			GetEmployeeEmail() in CreateEmployee()
+		because if not this can have unintendent consequences.
+		

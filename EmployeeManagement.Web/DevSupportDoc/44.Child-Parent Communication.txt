@@ -1,0 +1,86 @@
+44. Child to parent component communication in blazor
+
+Note : In this case, EmployeeList component is a parent component and
+		DisplayEmployee is a child component.
+		We have "Delete" functionality in child component So, once we delete the employee,
+		we need to notify to the parent component i.e EmployeeList Componet.
+			The main functionality of EmployeeList component is to get the List of Employees
+			and loop through each employee in the list
+			and its DisplayEmployee componet responsibility to display each component.
+
+DisplayEmployee.razor
+	1) Replace delete anchor element with the button.
+		<button type="button" class="btn btn-danger m-1" @onclick="Delete_Click"> Delete
+		</button>
+	
+DisplayEmployeeBase.cs
+	2) 
+		[Inject]
+		public IEmployeeService  EmployeeService {get; set;}
+		
+		protected async Task Delete_Click(){
+			await EmployeeService.DeleteEmployee(Employee.EmployeeId);
+		}
+
+Testing Note : Now If we click on Delete button, we are actually deleting Employee from the database. but it does not delete the 
+				Employee from the list view.
+				Once, you reload the EmployeeList you can not see the deleted Employee.
+				This is because, at first , the child component does not notify about deleted component to the parent, so list cannoy updated its display.
+	There are 2 ways to fix this.
+	i) To force reload the list component from the server again after the employee record is deleted
+	
+DisplayEmployeeBase.cs
+	3)
+	[Inject]
+	public NavigationManager NavigationManager {getl; set;}
+	
+	protected async Task Delete_Click(){
+		await EmployeeService.DeleteEmployee(Employee.EmployeeId);
+		/*After Employeerecord gets deleted, navigate to EmployeeList.
+			The most imp thing to rememer is pass true in second parameter for force reload
+		*/
+		NavigationManager.NavigateTo("/", true);
+	}
+
+DisAdv : There is a full page reload, and there is a better way to do this.
+	ii) We can notify to parent component after deletion from child component using Custom Events
+		
+	4) 
+	[Parameter]
+	pulic EventCallback<int> OnEmployeeDeleted {get; set;}
+	
+	protected async Task Delete_Click(){
+		await EmployeeService.DeleteEmployee(Employee.EmployeeId);
+		/* First approach(Force reload): After Employeerecord gets deleted, navigate to EmployeeList.
+			The most imp thing to rememer is pass true in second parameter for force reload
+		*/
+		//NavigationManager.NavigateTo("/", true);
+		
+		/*  second approach(using EventCallback): After the employee record is deleted, we want to raise this new
+			custom event. To the custom event we are passing id of the deleted employee as event payload			
+		*/		
+		await OnEmployeeDeleted.InvokeAsync(Employee.EmployeeId);
+	}
+
+Parent component :
+Note : With in the parent component, we need event handler method to handle this custom event OnEmployeeDeleted
+
+EmployeeLisBase.cs:
+Note: Our child component is passing id of employee which is deleted as event pay load to our custom event (OnEmployeeDeleted)
+	5) Include event handler method
+	/* When OnEmployeeDeleted eventhandler calls the EmployeeDeleted method, same as button click even which calls other method for logic
+		then gets the list of employees
+		EmployeeDeleted() custom event method gets called when the custom delete event triggers
+	*/
+	protected async Task EmployeeDeleted(){
+		Employees = (await EmployeeService.GetEmployees()).ToList();
+	}
+
+EmployeeList.razor:
+	6) Wire up custom event hadler with the custom event method
+	<DisplayEmployee .............OnEmployeeDeleted="EmployeeDeleted">
+	</DisplayEmployee>
+
+
+Note : Using this, cutom event handling, we dont have this full page reload.
+			
