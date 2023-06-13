@@ -1,0 +1,38 @@
+﻿	@*<input id="firstName"  placeholder="@Placeholder"  required = "@Required" maxLength = "@MaxLength" size="@Size"/>
+*@
+	<input id="firstName" @attributes="InputAtrributes" value = "@Value"/>
+
+		
+	
+@code {
+	///*
+	//	[Parameter] attribute allows Parent component to pass the data to child component
+	//*/
+	//	[Parameter]
+	//	public string Placeholder {get; set;} = "Child Componnet Placeholder";
+	//	[Parameter]
+	//	public string Required {get; set;} = "required";
+	//	[Parameter]
+	//	public string MaxLength {get; set;} = "15";
+	//	[Parameter]
+	//	public string Size {get; set;} = "25";	
+
+	/*
+	* Attribute Splatting
+	*/
+
+	[Parameter]
+	public Dictionary<string, object> InputAtrributes { get; set; } =
+				new Dictionary<string, object>()
+					{
+						{"required" , "required"},
+						{"placeholder" , "Child Componnet Placeholder"},
+						{"size" , "100"},
+						{"maxLength" , "15"}
+					};
+	/*
+		* Explicitily diclared Components 
+		*/
+	[Parameter]
+	public string Value { get; set; } = "Child Value";
+	}

@@ -1,0 +1,125 @@
+46. Blazor attribute splatting
+------------------------Create ChildComponet.razor-----------------------------
+	<input id="firstName"  placeholder="@Placeholder"  required = "@Required" maxLength = "@MaxLength" size="Size"/>
+	
+	@code {
+		[parameter]
+		public string Placeholder {get; set;} = "Child Componnet Placeholder";
+		[parameter]
+		public string Required {get; set;} = "required";
+		[parameter]
+		public string MaxLength {get; set;} = "15";
+		[parameter]
+		public string Size {get; set;} = "25";	
+	}
+------------------------------------------------------------------------
+1) Create ChildComponet.razor
+	<input id="firstName"  placeholder="Child Componnet Placeholder" />
+
+2) Create Parent Component  ParentComponent.razor
+	@page "/pc"
+	<ChildComponet></ChildComponet>
+	
+Note: ChildComponet is nested inside the parent component.
+
+Test : Child component place holder text is present when we open the browser
+
+Task : Now we want to override the Child Component Text and we want to do it from the parent component
+
+3) Copy the place holder and place it in ParentComponent.razor
+	<ChildComponet placeholder="Child Componnet Placeholder" ></ChildComponet>
+	
+Test : Invalid Operation Exception
+Note : Parent componet will set the placeholder value of ChildComponet, when ChildComponet has corresponding Placeholder parameter
+
+4) ChildComponet.razor	
+	<input id="firstName"  placeholder="@Placeholder" />
+	
+	@code 
+	/*
+	[Parameter] attribute allows Parent component to pass the data to child component
+	*/
+	[parameter]
+	public string Placeholder {get; set;} = "Child Componnet Placeholder";
+	}
+5) ParentComponent.razor
+	<ChildComponet placeholder="Parent Componnet Placeholder" ></ChildComponet>
+	
+Setting Multiple child component values from the Parent component
+6) ChildComponet.razor
+	<input id="firstName"  placeholder="@Placeholder"  required = "@Required" maxLength = "@MaxLength" size="Size"/>
+	
+	@code {
+		[parameter]
+		public string Placeholder {get; set;} = "Child Componnet Placeholder";
+		[parameter]
+		public string Required {get; set;} = "required";
+		[parameter]
+		public string MaxLength {get; set;} = "15";
+		[parameter]
+		public string Size {get; set;} = "25";	
+	}
+7) ParentComponent.razor
+	<ChildComponet placeholder="Parent Componnet Placeholder"  required="required" maxLength = "100" size="50"></ChildComponet>
+
+Note : All the values set by the parent component to child component is applied.
+		But at the moment, In our application we are not using attribute splatting
+		For every attribute we want to create dynamically,
+			1) We are creating corresponding property and decorating with [Parameter] attribute
+			2) then binding html attribute with respective property
+			3) In the parent component, every parameter we have in the child component, we pass a value using corresponding parameter.
+		This is vety tedious, when we want to set large no of attributes.
+		Note: Instead we can use attribute splatting.
+		With attribute splatting we dont need all those properties. We just need one propery of type dictionary.
+		Key of the dictionary is string and the value is Object.
+		We use this dictionary to capture the attributes, We can then splat this attributes on to the html element using @attribute razor directive
+8) ChildComponet.razor
+	<input id="firstName" @attributes="InputAtrributes"/>
+	
+	@code {
+	[Parameter]
+	public Dictionary<string, object> InputAtrributes { get; set; } =
+				new Dictionary<string, object>()
+					{
+						{"required" , "required"},
+						{"placeholder" , "Child Componnet Placeholder"},
+						{"size" , "100"},
+						{"maxLength" , "15"}
+					};
+	}
+
+Note : In the child component, we have specified some default values to this attribute.
+		Now from the Patrent componet, If we want to pass the values to these attributes,
+		1) In the Parent Componet first create the dictlonary
+
+Question :
+	Can component have attribute splatting and Explicitily diclared parameters ??
+Ans : 
+	In general, Attrbute splatting is used to capture and render additional attributes. in addition to the explicitily diclared coomponent
+	parameters. 
+Note : At the moment, in our example We are just using attribute splatting. 
+		but we can also use explocitlity diclared parameters.
+
+9) Attrbute Splatting + Explicitily Diclared parameters.
+ChildComponet.razor
+			<input id="firstName" @attributes="InputAtrributes" value = "@Value"/>
+	
+	@code {
+	//  Attrbute Splatting 
+	[Parameter]
+	public Dictionary<string, object> InputAtrributes { get; set; } =
+				new Dictionary<string, object>()
+					{
+						{"required" , "required"},
+						{"placeholder" , "Child Componnet Placeholder"},
+						{"size" , "100"},
+						{"maxLength" , "15"}
+					};
+	//  Explicitily Diclared parameters : Bind this value to the value attribute
+	[Parameter]
+	 public string Value {get; set;} = "Child Value";
+	}
+
+	
+	
+	
