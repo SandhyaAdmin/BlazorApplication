@@ -1,0 +1,95 @@
+48. Blazor cascading values and parameters
+-------------------------Used Components------------------------------
+		CascadingParent.razor
+		CascadingChild.razor
+		CascadingGrandChild.razor
+---------------------------------------------------------------
+	One way to pass data from Parent component to child component by using 
+		1) Component Parameters.
+Note : Blazor application is a set of components, and we put them together to create a working application.
+			
+				App Component
+					|	
+					|
+			-------------------------------------------
+			|                                          |
+			|										   |
+	    Employee List Component						Component1
+			|
+			|
+		Display Employee Component
+	
+	
+		1	 component can be nested in other component and which can be nested in one more component.
+		But it is tedeous when we pass values from One component to another componet using component parameters.
+	This is why we use cascading values and parameters : They provide a convinient way for an ancestor component to pass a value to all
+	of its descendent components.
+
+	
+Component Hierachy example:
+		GrandChild Component --> Child Component--> Parent component
+	Note : Grand child component nested with in the Child component and Child component nested with in the parent component.
+			To use Cascading values, Blazor comes with a special component called, <CascadingValue></CascadingValue>
+
+Req : From the Parent Component, we want to pass the Syle Property Vlaue to the Child Component.
+
+Ans : We wrpa the Child Componet with built in <CascadingValue> component.
+
+	<CascadingValue Value="@Style">
+		<ChildComponent></ChildComponent>
+	</CascadingValue>
+
+	Note : Now the Syle component value is cascaded to both Child and Grand child components
+
+Accessing cascading values to Both Child and Grand Child Components.
+	To access the Cascading value in Child componet we create the property in ChildComponent.
+	Note : Type of this propety must match with the type we have in Parent component.
+
+CascadingParent.razor :
+	@page "/cascadingparentc"
+
+	<h3 style="@Style">Cascading Parent Componet</h3>
+
+	<CascadingValue Value= "@Style">
+		<CascadingChild></CascadingChild>
+	</CascadingValue>
+
+
+	@code {
+		public string Style { get; set; } = "color:red";
+	}
+
+CascadingChild.razor :
+
+		
+	<h3style="@ElementStyle">-Cascading Child Componet</h3>
+
+	<CascadingGrandChild></CascadingGrandChild>
+
+	@code {
+    /*
+     * Foe this propery, to receive the value from the parent component, we decorate it with [CascadingParameter] Attribute.
+     */
+    [CascadingParameter]
+	public string ElementStyle { get; set; }
+	
+	}
+Note : With this style component value in the Parent componet is mapped with ElementStyle property in Child component
+
+Test : Child componet and Parent componet text are in Red but not for GrandChild Component because, GrandChild component is not using Cascading value.
+
+Accessing the cascading value to GrandChild component.
+
+CascadingGrandChild.razor		
+	<h3 style="@ElementStyle">-- Cascading Grand Child Componet</h3>
+
+	@code {
+		[CascadingParameter]
+		public string ElementStyle { get; set; }
+	}
+
+
+	
+	
+
+	

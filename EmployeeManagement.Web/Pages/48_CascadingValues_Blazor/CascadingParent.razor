@@ -1,0 +1,12 @@
+﻿@page "/cascadingparentc"
+
+<h3 style="@Style">Cascading Parent Componet</h3>
+
+<CascadingValue Value= "@Style">
+    <CascadingChild></CascadingChild>
+</CascadingValue>
+
+
+@code {
+    public string Style { get; set; } = "color:red";
+}

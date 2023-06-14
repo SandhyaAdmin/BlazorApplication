@@ -1,0 +1,12 @@
+﻿
+<h3 style="@ElementStyle">-Cascading Child Componet</h3>
+
+<CascadingGrandChild></CascadingGrandChild>
+
+@code {
+    /*
+     * Foe this propery, to receive the value from the parent component, we decorate it with [CascadingParameter] Attribute.
+     */
+    [CascadingParameter]
+    public string ElementStyle { get; set; }
+}
