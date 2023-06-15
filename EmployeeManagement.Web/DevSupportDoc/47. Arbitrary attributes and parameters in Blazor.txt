@@ -1,0 +1,51 @@
+47. Arbitrary attributes and parameters in Blazor
+---------------------------------
+Overriding Parent componet values with child componet and Passing Parent component valies to child componnet
+--------------------------------------------------
+	ParentComponent.razor
+	ChildComponent.razor
+----------------------------------------------------------------------------------------------------------------
+
+Note : If we want to give some attribute value in the Parent component,
+	Child component must have that value. other wise It throws Invalid Operation exception.
+
+ParentComponent.razor
+	<ChildComponent InputAtrributes= "attributesFromParent" value="Parent Value" someattribute="somevalue">
+	
+Test : InvalidOperationException: 
+	Object of type 'EmployeeManagement.Web.Pages.ChildComponent' does not have a property matching the name 'someattribute'.
+
+Note: To avoid the above error we should have corresponding property in the child component like the value propery
+		but we dont want to do that. and we only want to pass arbitary values from the parent component to child component
+		To fix this : set [Prameter(CapturedUnmatchedValues = true)]
+
+Test : InvalidOperationException: The property 'InputAtrributes' on component type 'EmployeeManagement.Web.Pages.ChildComponent' 
+		cannot be set explicitly when also used to capture unmatched values. Unmatched values:
+Note Test : What it is complaining is if set this (CapturedUnmatchedValues = true) we cannot set InputAtrribute property explicitily on Parent component.
+-----------------------------------
+Make below code changes :
+ParentComponent.razor
+
+		<ChildComponent 
+			Value="Parent Value" maxLength="15" placeholder="Parent Componnet Placeholder" required someattribute="somevalue" >
+		</ChildComponent>
+		@code{
+		}
+
+ChildComponent.razor
+		<input id="firstName" placeholder="Child Componnet Placeholder" @attributes="InputAtrributes" value = "@Value" />
+		
+		@code {
+				public Dictionary<string, object> InputAtrributes { get; set; } =
+				new Dictionary<string, object>();
+				[Parameter]
+				public string Value { get; set; } = "Child Value";
+		}
+
+Test :
+	When we inspect, we will get ParentComponent values.
+		placeholder = "Parent Componnet Placeholder"
+
+Conclusion : If we dont want the specific value to be overroden by Parent componet include in right hand side of InputAtrribute in child componet
+	Ex : <input id="firstName" @attributes="InputAtrributes" value = "@Value"  placeholder="Child Componnet Placeholder" />
+		Output: placeholder = "child component placeholder"

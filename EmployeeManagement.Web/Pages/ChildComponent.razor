@@ -1,10 +1,14 @@
 ﻿	@*<input id="firstName"  placeholder="@Placeholder"  required = "@Required" maxLength = "@MaxLength" size="@Size"/>
 *@
-	<input id="firstName" @attributes="InputAtrributes" value = "@Value"/>
+	<input id="firstName" 
+	placeholder="Child Componnet Placeholder" @attributes="InputAtrributes" value = "@Value" />
+	
+
 
 		
 	
 @code {
+
 	///*
 	//	[Parameter] attribute allows Parent component to pass the data to child component
 	//*/
@@ -21,18 +25,20 @@
 	* Attribute Splatting
 	*/
 
-	[Parameter]
+	[Parameter(CaptureUnmatchedValues = true)]
 	public Dictionary<string, object> InputAtrributes { get; set; } =
-				new Dictionary<string, object>()
-					{
-						{"required" , "required"},
-						{"placeholder" , "Child Componnet Placeholder"},
-						{"size" , "100"},
-						{"maxLength" , "15"}
-					};
+				new Dictionary<string, object>();
+					//{
+						//{"required" , "required"},
+						//{"placeholder" , "Child Componnet Placeholder"},
+						//{"size" , "100"},
+						//{"maxLength" , "15"}
+						//{"sayHello","Hello"}
+					//};
 	/*
 		* Explicitily diclared Components 
 		*/
+
 	[Parameter]
 	public string Value { get; set; } = "Child Value";
 	}

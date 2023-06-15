@@ -3,7 +3,9 @@
 @*	<ChildComponent placeholder="Parent Componnet Placeholder"  required="required" maxLength = "100" size="50">
 
 	</ChildComponent>*@
-	<ChildComponent InputAtrributes= "attributesFromParent" value="Parent Value">
+	<ChildComponent 
+	Value="Parent Value" maxLength="15" 
+	placeholder="Parent Componnet Placeholder" required someattribute="somevalue" >
 
 	</ChildComponent>
 
@@ -13,13 +15,14 @@
 	/*
 	 * Attribute Splatting
 	*/
-	[Parameter]
-	public Dictionary<string, object> attributesFromParent { get; set; } =
-				new Dictionary<string, object>()
-				{
-						{"required" , "required"},
-						{"placeholder" , "Parent Componnet Placeholder"}, 
-						{"size" , "50"},
-						{"maxLength" , "5"}
-				};
+	//[Parameter]
+	//public Dictionary<string, object> attributesFromParent { get; set; } =
+	//			new Dictionary<string, object>()
+	//			{
+	//					// {"required" , "required"},
+	//					// {"placeholder" , "Parent Componnet Placeholder"}, 
+	//					//{"size" , "50"},
+	//					//{"maxLength" , "5"}
+	//					{"sayHello","Hello"}
+	//			};
 	}
