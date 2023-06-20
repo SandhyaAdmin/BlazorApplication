@@ -2,11 +2,15 @@
 
 <h3 style="@Style">Cascading Parent Componet</h3>
 
-<CascadingValue Value= "@Style">
-    <CascadingChild></CascadingChild>
+<CascadingValue Value= "@Style" Name = "ColorStyle">
+    <CascadingValue Value = "@BorderType" Name = "BorderStyle">
+        <CascadingChild></CascadingChild>
+    </CascadingValue>
 </CascadingValue>
 
 
 @code {
     public string Style { get; set; } = "color:red";
+    //public int EmployeeAge { get; set; } = 25;
+    public string BorderType { get; set; } = "border:1px solid red";
 }

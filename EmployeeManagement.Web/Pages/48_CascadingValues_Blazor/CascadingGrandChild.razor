@@ -1,10 +1,13 @@
 ﻿
-<h3 style="@ElementStyle">-- Cascading Grand Child Componet</h3>
+<h3 style="@ElementStyle ; @H1Boder">-- Cascading Grand Child Componet</h3>
 
 
 
 
 @code {
-    [CascadingParameter]
+       [CascadingParameter(Name = "ColorStyle")]
     public string ElementStyle { get; set; }
+
+    [CascadingParameter(Name = "BorderStyle")]
+    public string H1Boder { get; set; }
 }

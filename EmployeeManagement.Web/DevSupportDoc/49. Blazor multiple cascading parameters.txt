@@ -1,0 +1,129 @@
+49. Blazor multiple cascading parameters
+
+Cascading multiple values from Parent component ti its descendent components
+
+1) CascadingParent.razor
+Note : Add one more EmployeeAge parameter and cacade it to child component.
+		@page "/cascadingparentc"
+		<h3 style="@Style">Cascading Parent Componet</h3>
+
+		<CascadingValue Value= "@Style">
+			<CascadingValue Value = "@EmployeeAge">
+				<CascadingChild></CascadingChild>
+			</CascadingValue>
+		</CascadingValue>
+
+
+		@code {
+			public string Style { get; set; } = "color:red";
+			public int EmployeeAge { get; set; } = 25;
+		}
+2) CascadingChild.razor
+Note : Add corresponding CascadingParameter to its child component double check the type of parameter which you are cascading. needs to be same as Parent
+		component.
+		
+		 <h3 style="@ElementStyle">-Cascading Child Componet : Emp Age = @EmpAge</h3>
+
+		<CascadingGrandChild></CascadingGrandChild>
+
+		@code {
+			/*
+			* Foe this propery, to receive the value from the parent component, we decorate it with [CascadingParameter] Attribute.
+			*/
+		[CascadingParameter]
+		public string ElementStyle { get; set; }
+
+		[CascadingParameter]
+		public int EmpAge { get; set; }
+}
+
+Test : By Default the values are cascaded by type
+
+	Parent Component Text
+	-Cascading Child Componet : Emp Age = 25
+	-- Cascading Grand Child Componet
+
+Note : In the Child Component, String Cascading value receives the string component. Integer Cascading Value receives the Integer component.
+
+
+Question : What If we have multiple cascading Values of similar type?
+
+3) CascadingParent.razor
+		@page "/cascadingparentc"
+
+		<h3 style="@Style">Cascading Parent Componet</h3>
+
+		<CascadingValue Value= "@Style">
+			<CascadingValue Value = "@BorderType">
+				@*<CascadingValue Value = "@EmployeeAge">*@
+				<CascadingChild></CascadingChild>
+				@*</CascadingValue>*@
+				</CascadingValue>
+		</CascadingValue>
+
+
+		@code {
+			public string Style { get; set; } = "color:red";
+			//public int EmployeeAge { get; set; } = 25;
+			public string BorderType { get; set; } = "border:1px solid red";
+			}
+4) CascadingChild.razor
+	
+		<h3 style="@ElementStyle" ; @H1Boder>-Cascading Child Componet 
+			@*: Emp Age = @EmpAge*@
+		</h3>
+
+		<CascadingGrandChild></CascadingGrandChild>
+
+		@code {
+			/*
+			* Foe this propery, to receive the value from the parent component, we decorate it with [CascadingParameter] Attribute.
+			*/
+		[CascadingParameter]
+		public string ElementStyle { get; set; }
+
+		[CascadingParameter]
+		public string H1Boder { get; set; }
+		//public int EmpAge { get; set; }
+}
+
+Note : So, here both the CascadingParameters are of type string and CascadingValue are type string.
+			So, the question is which value will be cascaded down to the child component
+			
+Test : Solid Red border is applied to the child components but Font color is not applied. when inspect it boeder solid red color 
+		is applied to the child component twise.
+
+Note : If the Parameters of same type, framework does not know which cascading type to be applied to the which value.
+		So, framework passes the nearest Cascading value to the child Component. So nearest Cascading value id Boarder Red Color
+		To avoid this, give unique name to the Child Component Cascading Value and Parent Component Casing Value.
+		In the child Component, We use these names to the corresponding child component values.
+
+5) CascadingParent.razor
+	<CascadingValue Value= "@Style" Name = "ColorStyle">
+		<CascadingValue Value = "@BorderType" Name = "BorderStyle">
+			<CascadingChild></CascadingChild>
+		</CascadingValue>
+	</CascadingValue>
+	
+6) CascadingChild.razor
+
+	[CascadingParameter(Name = "ColorStyle")]
+    public string ElementStyle { get; set; }
+
+    [CascadingParameter(Name = "BorderStyle")]
+    public string H1Boder { get; set; }
+
+Test : Both the Style and Border property applied to the Child component
+
+Note: Apply color and border style to GrandChild component too
+7) CascadingGrandChild.razor
+
+	<h3 style="@ElementStyle ; @H1Boder">-- Cascading Grand Child Componet</h3>
+@code {
+       [CascadingParameter(Name = "ColorStyle")]
+		public string ElementStyle { get; set; }
+
+		[CascadingParameter(Name = "BorderStyle")]
+		public string H1Boder { get; set; }
+}
+
