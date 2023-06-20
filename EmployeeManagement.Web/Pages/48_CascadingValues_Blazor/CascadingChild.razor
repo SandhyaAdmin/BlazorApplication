@@ -1,5 +1,5 @@
 ﻿
-<h3 style="@ElementStyle ; @H1Boder">-Cascading Child Componet 
+<h3 style="@ElementStyle ; @H1Boder">-Cascading Child Componet - @Counter
     @*: Emp Age = @EmpAge*@
 </h3>
 
@@ -14,5 +14,10 @@
 
     [CascadingParameter(Name = "BorderStyle")]
     public string H1Boder { get; set; }
+
+    
+    [CascadingParameter(Name = "Counter")]
+    public int Counter { get; set; }
+
     //public int EmpAge { get; set; }
 }

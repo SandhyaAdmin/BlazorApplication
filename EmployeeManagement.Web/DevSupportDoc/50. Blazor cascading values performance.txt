@@ -1,0 +1,63 @@
+50. Blazor cascading values performance
+	To demonstrate something called active monitoring and Performance accepect of Cascading Value
+	lets add another propery counter and its method
+	and Counter button, and display the counter value next to the parent component value
+	Lets also cascade the Counter value down the component tree.
+
+1) CascadingParent.razor
+
+	@page "/cascadingparentc"
+
+	<button class="btn btn-primary" @onclick="IncrementCounter">
+		Increment Counter
+	</button>
+
+	<h3 style="@Style">Cascading Parent Componet - @Counter</h3>
+	<CascadingValue Value="@Counter" Name = "Counter">
+		<CascadingValue Value= "@Style" Name = "ColorStyle">
+			<CascadingValue Value = "@BorderType" Name = "BorderStyle">
+				<CascadingChild></CascadingChild>
+			</CascadingValue>
+		</CascadingValue>
+	</CascadingValue>
+
+
+	@code {
+		public string Style { get; set; } = "color:red";
+		//public int EmployeeAge { get; set; } = 25;
+		public string BorderType { get; set; } = "border:1px solid red";
+		public int Counter { get; set; } = 0;
+
+		private void IncrementCounter()
+		{
+			Counter = Counter + 1;
+		}
+
+	}
+Note : Now, we can access the Counter Value in the Child Components, 
+		Now In the Child Component, we need another cascadingParemeter and add Counter Value next to the Child Componets.
+		and do the same changes in Grand Child Component.
+
+2) CascadingChild.razor, CascadingGrandChild.razor
+
+		<h3 style="@ElementStyle ; @H1Boder">-Cascading Child Componet - @Counter
+		</h3>
+
+	    [CascadingParameter(Name = "Counter")]
+		public string Counter { get; set; }
+
+Test : At Initial load, Counter value is zero for all the and at every time we click the button,
+		Counter value gets increased by 0.
+
+Note : Now, the Build-In CascadingValue Component has the boolean propery IsFixed="False" and its default value is False.
+		lets set it to true and see the behaviou we get
+3) CascadingParent.razor
+	<CascadingValue Value="@Counter" Name = "Counter" IsFixed="true">
+	
+Test : Notice that the Counter Value is increased in Parent Component but not in Child and GrandChild
+Note : Here we basically telling the Counter CascadingValue is fixed. So blazot effectively turn of monitoring CascadingValue for Changes.
+		Even if its changes in the Parent. Its not going to Cascade that change down the component tree.
+	Style and BorderStyle intially set by parent component and they never change.
+	So, for Performance stand point, it makes sense to turn off Active monitoring So, Lets set IsFixed= tree for
+		style and border style values
+		

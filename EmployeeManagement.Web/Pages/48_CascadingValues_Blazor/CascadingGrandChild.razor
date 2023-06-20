@@ -1,13 +1,16 @@
 ﻿
-<h3 style="@ElementStyle ; @H1Boder">-- Cascading Grand Child Componet</h3>
+<h3 style="@ElementStyle ; @H1Boder">-- Cascading Grand Child Componet - @Counter</h3>
 
 
 
 
 @code {
-       [CascadingParameter(Name = "ColorStyle")]
+    [CascadingParameter(Name = "ColorStyle")]
     public string ElementStyle { get; set; }
 
     [CascadingParameter(Name = "BorderStyle")]
     public string H1Boder { get; set; }
+
+    [CascadingParameter(Name = "Counter")]
+    public int Counter { get; set; }
 }
