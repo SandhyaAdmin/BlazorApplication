@@ -8,35 +8,30 @@
 </div>
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
-        </div>
-    </nav>
-</div>
-
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
+        </li>
+        <li class="nav-item px-3">
             <NavLink class="nav-link" href="/editemployee" @onclick="HandleClick" Match="NavLinkMatch.All">
                 <span class="oi oi-file" aria-hidden="true"></span> Create
             </NavLink>
-        </div>
-    </nav>
-</div>
-
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/editemployee/1" @onclick="HandleClick" Match="NavLinkMatch.All" >
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/editemployee/1" @onclick="HandleClick" Match="NavLinkMatch.All">
                 <span class="oi oi-pencil" area-hidden="true"></span> Edit
             </NavLink>
-
-        </div>
-    </nav>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/identity/account/login" @onclick="HandleClick" Match="NavLinkMatch.All">
+                <span class="oi oi-lock-locked" area-hidden="true"></span> Login
+            </NavLink>
+        </li>
+    </ul>
 </div>
+
 
 @code {
     private bool collapseNavMenu = true;

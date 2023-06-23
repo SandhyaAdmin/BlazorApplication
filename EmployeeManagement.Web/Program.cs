@@ -9,11 +9,16 @@ using EmployeeManagement.Web.Data;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("EmployeeManagementWebContextConnection") ?? throw new InvalidOperationException("Connection string 'EmployeeManagementWebContextConnection' not found.");
 
+//Adding cookie based Authetication Configurations
+builder.Services.AddAuthentication("Identity.Application")
+        .AddCookie();
+
+// Configuration for Identity DB Connection
 builder.Services.AddDbContext<EmployeeManagementWebContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<EmployeeManagementWebContext>();
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<EmployeeManagementWebContext>();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -51,6 +56,9 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
