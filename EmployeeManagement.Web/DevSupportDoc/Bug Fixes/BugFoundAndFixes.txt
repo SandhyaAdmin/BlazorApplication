@@ -1,0 +1,9 @@
+Bug 1 :
+	System.InvalidOperationException: 'Scheme already exists: Identity.Application'
+
+	Fix : Deleting the below line of code as we are adding default identity already in IdentityHostingStartUp.cs file
+			builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+				.AddEntityFrameworkStores<EmployeeManagementWebContext>();
+	
+	Link used for Fix :
+	https://stackoverflow.com/questions/56433112/system-invalidoperationexception-scheme-already-exists-identity-application

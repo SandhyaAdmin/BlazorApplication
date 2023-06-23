@@ -1,0 +1,40 @@
+53. Blazor cookie authentication - login page
+	Asp.Net Core Identity provides Cookie Authentication out of the box.
+	Now We will discuss how to integrate this cookie authentication in our blazor application.
+1) The first step is to scaffold the Asp.net core Identity into our blazor application.
+	Asp.Net core Identity provides	
+			1) User Registration
+			2) Login
+			3) Logout
+			4) Two Factor Authentication etc. out of the box.
+2) The next step is to integrate Cookie authentication and to add related services into the Configure Service method of startup.cs/program.cs file.
+	Services.AddAuthentication()
+	
+	This method adds authentication, As a parameter we need to specify the default scheme.
+	Asp.Net core Identity writes cookie with the scheme "Identity.Application"
+	Services.AddAuthentication("Identity.Application")
+	
+	Note: We have to specify the same string as the default scheme, otherwise cookie authentication does bot work as expected
+	
+	then we need to AddCookie() 
+		This method adds Cookie Services
+		Services.AddAuthentication("Identity.Application")
+				.AddCookie()
+	
+	Next we need to add Authenthentication and Autherization components to the http middleware pipelines.
+		We do thet in the Configure method of startup.cs/program.cs file. under app.routing()
+		
+		app.UseAuthentication();
+		app.UseAuthorization();
+		
+	Next We need Log in Link on the Navigation Menu. Add below code in Shared -> NavMenu.razor
+	
+		<li class="nav-item px-3">
+            <NavLink class="nav-link" href="/identity/account/login" @onclick="HandleClick" Match="NavLinkMatch.All">
+                <span class="oi oi-lock-locked" area-hidden="true"></span> Login
+            </NavLink>
+        </li>
+Test : We now have the Login Link.
+		When we click on it, we are redirected to asp.net core identity/account/login page
+		As for now we donot have any User account.
+		Click on register as a new user and register with email and password , Confirm Password
