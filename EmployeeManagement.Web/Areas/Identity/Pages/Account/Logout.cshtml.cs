@@ -35,7 +35,11 @@ namespace EmployeeManagement.Web.Areas.Identity.Pages.Account
             {
                 // This needs to be a redirect so that the browser performs a new
                 // request and the identity for the user gets updated.
+                // retunring to the login page
                 return RedirectToPage();
+
+                // returning the local root url once used clicked on Log Out
+                //return LocalRedirect("~/");
             }
         }
     }

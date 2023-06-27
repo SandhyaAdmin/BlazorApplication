@@ -1,0 +1,65 @@
+54. Blazor cookie authentication Logout page
+	
+	When we logged in, Blazor creates a cookie called Identity.Application
+	With every request browser send this cookie to the server, Server reads the cookie and knows who the logged in user is.
+	When we logged out of the application, the cookie must be deletd.
+
+1. Include LogOutMenu in LogOutMenu.razor
+
+	    <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/identity/account/logout" @onclick="HandleClick" Match="NavLinkMatch.All">
+                <span class="oi oi-power-standby" area-hidden="true"></span> Logout
+            </NavLink>
+        </li>
+Test: You can see Log out sussefully message. but still you have the "Identity.Application" cookie.
+		when you click on Logout button the top right. When you click on Logout link, that when Logout form is posted on to the server, then
+		the cookie is removed. and we are logged out.
+---------------------------------------------
+_loginPartial.cshtml
+	If the user is already signed in,
+		-> We have an ancor element that displays the signed in user name
+		-> We have a logout form and id of the logout form is logoutForm,
+			when we click the button, Logout form is submitted. A post request issued to the Logout Page
+Logout.cshtml.cshtml
+	In Logout Page, OnPost method handles the post request
+		     public async Task<IActionResult> OnPost(string returnUrl = null)
+			{
+				await _signInManager.SignOutAsync(); 
+					This method removes the authentication cookie and sign out the user.
+
+Logging out Immidlitly once we click on Logout butto using IIFE: Immidlitly Invoked Function Expression
+Include below code in Logout.cshtml
+
+@*IIFE : Immidiatly invoked function expression*@
+<script>
+    ( () => {
+        document.getElementById('logoutForm').submit();
+    })()
+</script>
+
+Note : Its a java script function that runs as soon as its defined and Its a self executing function. We sre getting logout form by id and submiting item
+
+
+// returning the local root url once used clicked on Log Out
+Logout.cshtml.cs
+
+public async Task<IActionResult> OnPost(string returnUrl = null)
+        {
+            await _signInManager.SignOutAsync();
+            _logger.LogInformation("User logged out.");
+            if (returnUrl != null)
+            {
+                return LocalRedirect(returnUrl);
+            }
+            else
+            {
+                // This needs to be a redirect so that the browser performs a new
+                // request and the identity for the user gets updated.
+                // retunring to the login page
+                //return RedirectToPage();
+
+                // returning the local root url once used clicked on Log Out
+                return LocalRedirect("~/");
+            }
+        }
+	
