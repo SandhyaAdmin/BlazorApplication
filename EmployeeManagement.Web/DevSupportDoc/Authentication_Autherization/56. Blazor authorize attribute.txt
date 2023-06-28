@@ -1,0 +1,64 @@
+56. Blazor authorize attribute
+
+AutherizeView Component : 
+	This component is used to autherize the display of specific parts with in a page including child components
+Autherize Attribute :
+	We use Autherize attribute to protect routable components. ie components with @page directive.
+		We reach these components via the router and autherization is performed while being routed to these components.
+			So, this means autherize attribute can not be used to protect parts of a page or child components.
+			For that we use <AutherizeView> component
+			and for routeble components ie for components with @page directive we use autherize attribute.
+
+Test : At the moment we are not logged in, I can still see the list of all the components. This is EmployeeList component.
+		When I click on View button, We can access, EmployeeDetails component
+		When I click on Edit button, I can access EditEmployee component
+Note : All these are routable components. components with @page directive.
+	We can reach the EmployeeList component, by navigating root application url "/".
+------------------------------------------------------------------------------------------------
+Requirement : So, what we want to do is protect these components,
+				for that lets use the autherize attribute
+1. EmployeeList.razor :
+	@attribute [Autherize]
+	
+Test : If with the [Autherize] attribute in place, I can still access the EmployeeList component.
+		This is because autherization to work as expected along with [autherize] attribute we must use AutherizeRouteView component
+			instead of plain <RouteView> component.
+			Replace <RouteView> component in app.razor by AutherizeRouteView component.
+2. App.razpr :
+	        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+Test : Now We are not authorized to access the EmployeeList component.
+		To access it we must log in. In a simillar way we must protect our other routable components like 
+		employeedetails and editemployee components etc.
+	If we are not autheized to access the component, bu default We will get "Not Autherized" text.
+We can customize this text as well. We will do that in App.razor component.
+3. App.razor
+	    <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" >
+            <NotAuthorized>
+                <p> Sorry, you are not autherized to reach this page</p>
+                <p>To may need to login as a different user</p>
+            </NotAuthorized>
+        </AuthorizeRouteView>
+Test : We can see the text as expected. To be able to access the employeecomponent, we must login.
+-------------------------------------------------------------------------------------------------------------
+At the moment, we are using the [autherize] attribute in its simplest form with out any parameters rules and policies.
+	So it only checks if the user is authenticated.
+		If the user is authenticated, then autherization is granted. other wise not.
+		Just like <AutherizeView> component, [Autherize] attribute also supports role based and polisy based autherization.
+For Role based autherization : Use the Roles Parameter
+			@page "/"
+			@attribute [Autherize(Roles = "administrator","manager")]
+			<p>
+				Only users in administrator or manager roles are allowed access
+			</p>
+
+For Policy based autherization : Use Policy parameter
+			@page "/"
+			@attribute [Autherize(Policy = "admin-policy")]
+			<p>
+				Only users who satisfies admin-policy are allowed access
+			</p>
+--------------------------------------------------------------------------------
+
+		
+	
+			
