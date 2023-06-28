@@ -1,0 +1,104 @@
+55 Authorization in Blazor :
+	This Authorization explains how to show and hide UI elements depending upon the authetication state of the users
+Authentication :
+	Authentication is the process of identifying who the user is.
+Autherization :
+	Authorization is the process of identifying what the user can and Can not do.
+
+For example : If the logged in User is an administrator, He can craete, update, view and delete Orders.
+					Where as a normal user can only view orders but not create, update or delete orders.
+*** Access is typically granted or denied based on
+		whether a user is Autheticated t.e looged in	
+				a user in a role
+				a user has a claim
+				or a specific policy is satisfied.
+----------------------------------------------------------------------------------------------------
+<AutherizeView> component :
+		In blazor, we use <AutherizeView> component to show or hide UI elements depending on the user autherized to see it
+In this example <AutherizeView> component is used in very simplest form with out any parameters roles or policies.
+		Only checks if the user is autheticated.
+			If the user is autheticated, content in <Autherized> component is displayed.
+					otherwise content <NotAutherized> component displayed
+					
+					<AutherizeView>
+						<Autherized>
+							Autherized content
+						</Autherized>
+						<NotAutherized>
+							Not Autherized Content
+						</NotAutherized>
+					</AutherizeView>
+---------------------------------------------------------------------------------------------					
+At the moment irresplective of whether we logged in or not. we displayed all the navigation links on the left.
+	We dont want that. We just want to display only Login. If the user is not logged in.
+	If the user is Logged in Hide the Login and display other Navigation menu items.
+	Lets achieve this using 
+					<AutherizeView> component:
+	Include all the navigation links except Login in <Autherized> component
+	and Login in <NotAutherized> component
+
+NavMenu.razor
+					<AutherizeView>
+						<Autherized>
+							Home,Edit,Create,LogOut
+						</Autherized>
+						<NotAutherized>
+							LogIn
+						</NotAutherized>
+					</AutherizeView>
+Test:
+InvalidOperationException: Authorization requires a cascading parameter of type Task<AuthenticationState>. 
+Consider using CascadingAuthenticationState to supply this.
+Fix: We need to supply AuthenticationState to our blazor application and we do that by wrapping router component with cascading
+	AuthenticationState component.
+	The router component is in app.razor fole
+app.razor
+<CascadingAuthenticationState>
+	<router>
+	..
+	</router>
+</CascadingAuthenticationState>
+
+Test : We can see the output as expected.
+-------------------------------------------------------------------------------------------------------------------
+Here we are using autherized view component in its simplest form with out rules are policies.
+	So the autherized view component only checks if the user is autheticated to grant or deny access.
+	Just like ASP.Net MVC and razor apps, blazor also supports policy based and role based autherization.
+For Role based autherization : Use the Roles Parameter
+		<AutherizeView Roles = "administrator,manager">
+			<p>
+				Displayed if the logged in user is administrator or manager role
+			</p>
+		</AutherizeView>
+For Policy based autherization : Use Policy parameter
+		<AutherizeView Policy = "admin-policy">
+			<p>
+				Displayed if the logged in user satisfy admin policy
+			</p>
+		</AutherizeView>
+-------------------------------------------------------------------------------------------------------------------------
+Note : <AutherizedView> component also exposes a @context variable : The variable type is AuthenticationState.
+		As the name implied, we use this variable to access the autheticated user information.
+		So add below along with logOut text
+			@context.User.Identity.Name
+		        <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="/identity/account/logout" @onclick="HandleClick" Match="NavLinkMatch.All">
+                        <span class="oi oi-power-standby" area-hidden="true"></span> Logout @context.User.Identity.Name
+                    </NavLink>
+                </li>
+Test : So, next to the logout link we can see the logged in user name
+--------------------------------------------------------------------------------------------------
+AuthenticationStateProvider Service :
+	Blazor has built in service called AuthenticationStateProvider service
+		This service obtains authentication state data from asp.net core HttpContext.User object.
+			So, this is how authentication state integrates with existing asp.net core authentication mechanism.
+			It is this service used by both below components
+			1) <AutherizeView>
+			2) <CascadingAuthenticationState>
+			So, where needed use these components and not AuthenticationStateProvider service directly.
+				The problem is that if we use authebticationStateProvider directly, the component is not notifies directly
+				if the underlying authentication state data changes. Thats wht we use components instaed of services directly.
+--------------------------------------------------------------------------------------
+	
+
+
